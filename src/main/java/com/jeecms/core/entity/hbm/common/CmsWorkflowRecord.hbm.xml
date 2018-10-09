@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.jeecms.core.entity">
+	<class
+		name="CmsWorkflowRecord"
+		table="jc_workflow_record"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id name="id" type="integer" column="record_id"><generator class="identity"/></id>
+
+		<property name="recordTime" column="record_time" type="timestamp" not-null="true" length="19"/>
+		<property name="opinion" column="opinion" type="string" not-null="false" length="255"/>
+		<property name="type" column="type" type="integer" not-null="true" length="10" />
+		<many-to-one name="site" column="site_id" class="CmsSite" not-null="true"></many-to-one>
+		<many-to-one name="event" column="event_id" class="CmsWorkflowEvent" not-null="true"></many-to-one>
+		<many-to-one name="user" column="user_id" class="CmsUser" not-null="true"></many-to-one>
+
+	</class>	
+</hibernate-mapping>

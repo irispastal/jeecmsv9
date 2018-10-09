@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.jeecms.cms.entity.main">
+	<class name="CustomForm" table="jc_custom_form">
+		<meta attribute="sync-DAO">false</meta>
+		<cache usage="read-write"/>
+		<id name="id" type="java.lang.Integer" column="form_id">
+			<generator class="sequence"><param name="sequence">S_JC_CUSTOM_FORM</param></generator>
+		</id>
+		<property name="name" column="form_name" type="string" not-null="true" length="100"/>
+		<property name="priority" column="priority" type="integer" not-null="true" length="10"/>
+		<property name="memberMeun" column="is_member_meun" type="java.lang.Boolean" not-null="true"/>
+		<property name="createTime" column="create_time" type="timestamp" not-null="true" length="19"/>
+		<property name="submitUrl" column="tpl_submit_url" type="string" not-null="true" length="100"/>
+		<property name="viewUrl" column="tpl_view_url" type="string" not-null="true" length="100"/>
+		<property name="startTime" update="true" column="start_time" type="timestamp" not-null="false" length="19"/>
+		<property name="endTime" update="true" column="end_time" type="timestamp" not-null="false" length="19"/>
+		<property name="allSite" column="all_site" type="java.lang.Boolean" not-null="true"/>
+		<property name="enable" column="enable" type="java.lang.Boolean" not-null="true"/>
+		<property name="dayLimit" column="day_limit" type="integer" not-null="true" length="10"/>
+		<many-to-one name="site" column="site_id" class="com.jeecms.core.entity.CmsSite" not-null="true"></many-to-one>
+		<many-to-one name="user" column="user_id" class="com.jeecms.core.entity.CmsUser" not-null="true"></many-to-one>
+		<many-to-one name="workflow" column="workflow_id" class="com.jeecms.core.entity.CmsWorkflow" not-null="false"></many-to-one>
+	
+		<set name="fileds" inverse="true" cascade="all-delete-orphan">
+			<key column="form_id"/>
+			<one-to-many class="com.jeecms.cms.entity.main.CustomFormFiled"/>
+		</set>
+		
+		<set name="records" inverse="true" cascade="all-delete-orphan">
+			<key column="form_id"/>
+			<one-to-many class="com.jeecms.cms.entity.main.CustomRecord"/>
+		</set>
+	</class>	
+</hibernate-mapping>

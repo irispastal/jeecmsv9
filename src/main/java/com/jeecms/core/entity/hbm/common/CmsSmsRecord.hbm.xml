@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+<hibernate-mapping package="com.jeecms.core.entity">
+	<class
+		name="CmsSmsRecord"
+		table="jc_sms_record"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<cache usage="read-write"/>
+		<id
+			name="id"
+			type="integer"
+			column="id"
+		>
+			<generator class="identity"/>
+		</id>
+		
+		<property name="phone" column="phone" type="string" length="255" not-null="true"></property>
+		<property name="sendContent" column="send_content" type="string" length="255" not-null="false"></property>
+		<property name="sendTime" column="send_time" type="timestamp" not-null="true" length="19"></property>
+		<property name="validateType" column="validate_type" type="integer" not-null="false" length="2"></property>
+		
+		<many-to-one name="sms" class="com.jeecms.core.entity.CmsSms" column="sms_id"></many-to-one>
+		<many-to-one name="site" class="com.jeecms.core.entity.CmsSite" column="site_id"></many-to-one>
+		<many-to-one name="user" class="com.jeecms.core.entity.CmsUser" column="user_id"></many-to-one>
+	</class>
+</hibernate-mapping>

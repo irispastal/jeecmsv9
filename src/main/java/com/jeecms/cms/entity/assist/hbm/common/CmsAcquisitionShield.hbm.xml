@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.jeecms.cms.entity.assist">
+	<class name="CmsAcquisitionShield" table="jc_acquisition_shield">
+		<meta attribute="sync-DAO">false</meta>
+		<cache usage="read-write"/>
+		<id name="id" type="java.lang.Integer" column="shield_id"><generator class="identity"/></id>
+		<property name="shieldStart" column="shield_start" type="string" not-null="false" length="255"/>
+		<property name="shieldEnd" column="shield_end" type="string" not-null="false" length="255"/>
+		<many-to-one name="acquisition" column="acquisition_id" class="com.jeecms.cms.entity.assist.CmsAcquisition" not-null="true"></many-to-one>
+	</class>	
+</hibernate-mapping>

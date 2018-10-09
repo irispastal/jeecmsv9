@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.jeecms.cms.entity.main">
+	<class name="CustomRecord" table="jc_custom_record">
+		<meta attribute="sync-DAO">false</meta>
+		<cache usage="read-write"/>
+		<id name="id" type="java.lang.Integer" column="record_id"><generator class="identity"/></id>
+		<property name="status" column="status" type="integer" not-null="true" length="10"/>
+		<property name="createTime" column="create_time" type="timestamp" not-null="true" length="19"/>
+		<many-to-one name="form" column="form_id" class="com.jeecms.cms.entity.main.CustomForm" not-null="true"></many-to-one>
+		<many-to-one name="site" column="site_id" class="com.jeecms.core.entity.CmsSite" not-null="true"></many-to-one>
+		<many-to-one name="user" column="user_id" class="com.jeecms.core.entity.CmsUser" not-null="false"></many-to-one>
+	
+		<set name="recordCheckSet" inverse="true" cascade="delete-orphan">
+			<cache usage="read-write"/>
+			<key column="record_id"/>
+			<one-to-many class="com.jeecms.cms.entity.main.CustomRecordCheck"/>
+		</set> 
+		<map name="attr" table="jc_custom_record_attr" cascade="all-delete-orphan">
+			<cache usage="read-write"/>
+			<key column="record_id" not-null="true"/>
+			<map-key column="filed_name" type="string" length="30"/>
+			<element column="filed_value" type="string" length="255"/>
+		</map>	
+       	
+       	
+	</class>	
+</hibernate-mapping>

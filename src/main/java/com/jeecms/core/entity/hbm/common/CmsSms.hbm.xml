@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.jeecms.core.entity">
+	<class
+		name="CmsSms"
+		table="jc_sms"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<cache usage="read-write"/>
+		<id
+			name="id"
+			type="integer"
+			column="id"
+		>
+			<generator class="identity"/>
+		</id>
+		
+		<property name="name" column="name" type="string" length="255" not-null="true"></property>
+		<property name="accessKeyId" column="access_key_id" type="string" length="255" not-null="true"></property>
+		<property name="accessKeySecret" column="access_key_secret" type="string" length="255" not-null="true"></property>
+		<property name="templateCode" column="template_code" type="string" length="255" not-null="false"></property>
+		<property name="templateParam" column="template_param" type="string" length="255" not-null="false"></property>
+		<property name="intervalTime" column="interval_time" type="integer" length="11" not-null="false"></property>
+		<property name="intervalUnit" column="interval_unit" type="java.lang.Byte" length="2" not-null="false"></property>
+		<property name="effectiveTime" column="effective_time" type="integer" length="11" not-null="false"></property>
+		<property name="effectiveUnit" column="effective_unit" type="java.lang.Byte" length="2" not-null="false"></property>
+		<property name="signName" column="sign_name" type="string" length="255" not-null="false"></property>
+		<property name="smsUpExtendCode" column="sms_up_extend_code" type="string" length="255" not-null="false"></property>
+		<property name="outId" column="out_id" type="string" length="255" not-null="false"></property>
+		<property name="nationCode" column="nation_code" type="string" length="255" not-null="false"></property>
+		<property name="endPoint" column="end_point" type="string" length="255" not-null="false"></property>
+		<property name="invokeId" column="invoke_id" type="string" length="255" not-null="false"></property>
+		<property name="source" column="sms_source" type="java.lang.Byte" length="2" not-null="false"></property>
+		<property name="isCode" column="is_code" type="java.lang.Boolean" length="1" not-null="false"></property>
+		<property name="createTime" column="create_time" type="timestamp" not-null="true" length="19"></property>
+		<property name="randomNum" column="random_num" type="integer" not-null="false" length="11"></property>
+		
+		<set name="smsRecords" inverse="true" cascade="all">
+			<key column="sms_id"></key>
+			<one-to-many class="com.jeecms.core.entity.CmsSmsRecord"/>
+		</set>
+	</class>
+</hibernate-mapping>

@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.jeecms.core.entity">
+	<class
+		name="CmsDepartment"
+		table="jc_department"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<cache usage="read-write"/>
+		<id
+			name="id"
+			type="integer"
+			column="depart_id"
+		>
+			<generator class="identity"/>
+		</id>
+
+		<property
+			name="name"
+			column="depart_name"
+			type="string"
+			not-null="true"
+			length="255"
+		/>
+		<property
+			name="priority"
+			column="priority"
+			type="integer"
+			not-null="true"
+			length="10"
+		/>
+		<property
+			name="weights"
+			column="weights"
+			type="integer"
+			not-null="true"
+			length="10"
+		/>
+		<many-to-one name="parent" column="parent_id" class="CmsDepartment" not-null="false"></many-to-one>
+		<set name="child" inverse="true" cascade="delete">
+			<cache usage="read-write"/>
+			<key column="parent_id"/>
+			<one-to-many class="CmsDepartment"/>
+		</set>
+		<set name="channels" table="jc_channel_department">
+			<cache usage="read-write"/>
+			<key column="department_id"/>
+			<many-to-many column="channel_id" class="com.jeecms.cms.entity.main.Channel"/>
+		</set>
+		<set name="controlChannels" table="jc_channel_depart_control">
+			<cache usage="read-write"/>
+			<key column="department_id"/>
+			<many-to-many column="channel_id" class="com.jeecms.cms.entity.main.Channel"/>
+		</set>
+		<set name="guestBookCtgs" table="jc_guestbook_ctg_department">
+			<cache usage="read-write"/>
+			<key column="depart_id"/>
+			<many-to-many column="guestbookctg_id" class="com.jeecms.cms.entity.assist.CmsGuestbookCtg"/>
+		</set>
+		<many-to-one
+			name="site"
+			column="site_id"
+			class="CmsSite"
+			not-null="false"
+		>
+		</many-to-one>
+
+
+	</class>	
+</hibernate-mapping>

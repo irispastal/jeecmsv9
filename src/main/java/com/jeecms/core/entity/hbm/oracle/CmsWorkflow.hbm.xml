@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+	"-//Hibernate/Hibernate Mapping DTD//EN"
+	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd" >
+
+<hibernate-mapping package="com.jeecms.core.entity">
+	<class
+		name="CmsWorkflow"
+		table="jc_workflow"
+	>
+		<meta attribute="sync-DAO">false</meta>
+		<id name="id" type="integer" column="workflow_id">
+			<generator class="sequence"><param name="sequence">S_JC_WORKFLOW</param></generator>
+		</id>
+		<property name="name" column="name" type="string" not-null="true" length="255"/>
+		<property name="description" column="description" type="string" not-null="false" length="255"/>
+		<property name="priority" column="priority" type="integer" not-null="true" length="10"/>
+		<property name="disabled" column="is_disabled" type="boolean" not-null="true" />
+		<property name="cross" column="is_cross" type="boolean" not-null="true" />
+		<many-to-one name="site" column="site_id" class="CmsSite" not-null="true"/>
+		<list name="nodes" table="jc_workflow_node">
+			<cache usage="read-write"/>
+			<key column="workflow_id"/>
+			<list-index column="priority"/>
+			<composite-element class="CmsWorkflowNode">
+				<property name="countersign" column="is_countersign" type="boolean" not-null="true"/>
+				<many-to-one name="role" column="role_id" class="CmsRole" not-null="true"></many-to-one>
+			</composite-element>
+		</list>
+		<set name="events" inverse="true" lazy="true">
+			<key column="workflow_id"/>
+			<one-to-many class="CmsWorkflowEvent"/>
+		</set>
+	</class>	
+</hibernate-mapping>

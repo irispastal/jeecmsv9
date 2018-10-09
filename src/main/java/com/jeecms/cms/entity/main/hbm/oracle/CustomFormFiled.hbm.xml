@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.jeecms.cms.entity.main">
+	<class name="CustomFormFiled" table="jc_custom_form_filed">
+		<meta attribute="sync-DAO">false</meta>
+		<cache usage="read-write"/>
+		<id name="id" type="java.lang.Integer" column="filed_id">
+			<generator class="sequence"><param name="sequence">S_JC_CUSTOM_FORM_FILED</param></generator>
+		</id>
+		<property name="field" column="field" type="string" not-null="true" length="50"/>
+		<property name="label" column="label" type="string" not-null="true" length="100"/>
+		<property name="priority" column="priority" type="integer" not-null="false" length="10"/>
+		<property name="defValue" column="def_value" type="string" not-null="false" length="255"/>
+		<property name="optValue" column="opt_value" type="string" not-null="false" length="255"/>
+		<property name="size" column="text_size" type="string" not-null="false" length="20"/>
+		<property name="description" column="description" type="string" not-null="false" length="255"/>
+		<property name="dataType" column="data_type" type="integer" not-null="true" length="10"/>
+		<property name="displayInList" column="is_display" type="java.lang.Boolean" not-null="true"/>
+		<property name="required" column="is_required" type="java.lang.Boolean" not-null="true"/>
+		<many-to-one name="form" column="form_id" class="com.jeecms.cms.entity.main.CustomForm" not-null="true"></many-to-one>
+		
+	</class>	
+</hibernate-mapping>

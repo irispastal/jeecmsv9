@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>${form.name!}</title>
+
+<link href="${resSys}/jqueryUI/jquery.ui.css" rel="stylesheet" type="text/css"/>
+
+<script type="text/javascript" src="${base}/res/jqueryUI/jquery.js"></script>
+<script src="${base}/res/common/js/jquery.ui.widget.js" type="text/javascript"></script>
+<script src="${base}/res/common/js/jquery.iframe-transport.js" type="text/javascript"></script>
+<script src="${base}/res/common/js/jquery.fileupload.js" type="text/javascript"></script>
+<style>
+	.bar {
+        height: 18px;
+        background: green;
+    }
+    #progress{
+        border-radius:6px;width: 300px;background: red;
+        margin: 10px auto;
+    }
+    .cms-form-warpper{
+      width: 860px;
+      margin: 40px 70px;
+    }
+    .cms-form-header{
+      font-size: 24px;
+      color: #1f1f1f;
+      border-bottom: 1px solid #e0e0e0;
+      margin: 0;
+      padding: 0;
+    }
+    .cms-form-item{
+       margin: 0;
+      padding: 10px 0;
+      border-bottom: 1px dotted #e4e4e4;
+      overflow: hidden;
+    }
+    .cms-form-item >*{
+      float: left;
+    }
+    .cms-form-label{
+      box-sizing: border-box;
+      display: inline-block;
+      width: 250px;
+      text-align: right;
+      padding-right: 20px;
+      position: relative;
+      top: 4px;
+    }
+    .cms-form-input{
+      width: 450px;
+      height: 32px;
+      line-height: 32px;
+      border: 1px solid #a9a9a9;
+      border-radius: 4px;
+    }
+    .cms-form-time{
+      width: 180px;
+      height: 32px;
+      line-height: 32px;
+      border: 1px solid #a9a9a9;
+      border-radius: 4px;
+    }
+    .cms-form-select{
+      width: 180px;
+      height: 32px;
+      line-height: 32px;
+      border: 1px solid #a9a9a9;
+      border-radius: 4px;
+    }
+    .cms-form-textarea{
+      width: 450px;
+      height: 95px;
+      border: 1px solid #a9a9a9;
+      border-radius: 4px;
+    }
+    .cms-upload-btn{
+      outline: none;
+      width: 64px;
+      height: 34px;
+      text-align: center;
+      line-height: 34px;
+      background: #f0f0f0;
+      border: 1px solid #a9a9a9;
+      color: #1f1f1f;
+      font-size: 14px;
+      border-radius: 4px;
+      padding: 0;
+      cursor: pointer;
+    }
+    .cms-upload-image{
+      margin-top: 10px;
+      width: 130px;
+      height: 130px;
+      background: #ededed;
+    }
+    .cms-upload-image img{
+      border: none;
+      width: 130px;
+      height: 130px;
+    }
+    .cms-footer{
+      margin-top: 35px;
+      width: 100%;
+     padding-left: 250px;
+    }
+    .cms-submit{
+      width: 130px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      border-radius: 4px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+      color: #fff;
+     margin-right: 5px;
+     background: #f03838; 
+    }
+    .cms-rest{
+      width: 130px;
+      height: 40px;
+      line-height: 40px;
+      text-align: center;
+      border-radius: 4px;
+      font-size: 16px;
+      border: none;
+      outline: none;
+      color: #fff;
+     margin-right: 5px;
+     background: #a7a7a7; 
+    }
+</style>
+</head>
+<body>		
+	  <!-- 字段类型
+	  dataType:1 字符串文本  2 整形文本 3 浮点形文本
+      4 文本区 5 日期 6 下拉列表 7 复选框
+      8 单选框 9 附件 10 图片 11 电话 12 邮箱
+    --> 
+  <section class="cms-form-warpper">
+  <h1 class="cms-form-header">${form.name!}</h1>	
+  <form id="form" action="${base}/record_save.jspx" method="post">
+    <div class="message_inf"> 
+      <div class="line"></div>
+		[#if form??&&form.fileds??]	
+					<input type="hidden" name="formId" value="${form.id!}"/>
+					<input type="hidden" name="status" value="0"/>
+					<input type="hidden" name="appId" value="1580387213331704"/>
+				<!-- 	<input type="hidden" name="sessionKey" value="${sessionKey!}"/> -->
+       [#list form.fileds?sort_by("priority") as f]
+       <div class="cms-form-item">
+         [#if f.dataType==1]  <!-- 文本 --> 
+          <span class="cms-form-label">${f.label!}:</span>
+          <input name="attr_${f.field!}" type="text" value="${f.defValue!}" class="cms-form-input"/>				
+				 [/#if]	
+				 [#if f.dataType==2] <!-- 整形文本 --> 
+          <span class="cms-form-label">${f.label!}:</span>
+          <input name="attr_${f.field!}" type="number" value="${f.defValue!}" class="cms-form-input"/> 
+				 [/#if]	
+				 [#if f.dataType==3] <!-- 浮点文本 --> 
+					<span class="cms-form-label">${f.label!}:</span><input name="attr_${f.field!}" type="number" value="${f.defValue!}" class="cms-form-input"/>
+				 [/#if]	
+				 [#if f.dataType==4] <!-- 文本域 --> 
+         <span class="cms-form-label">${f.label!}:</span><textarea name="attr_${f.field!}" cols="30" rows="3" class="cms-form-textarea" >${f.defValue!}</textarea> 
+				 [/#if]	 
+				 [#if f.dataType==5] <!-- 时间选择 --> 
+         <span class="cms-form-label">${f.label!}:</span><input name="attr_${f.field!}" type="date" value="${f.defValue!}"  class="cms-form-time"/> 
+				 [/#if]	
+				 [#if f.dataType==6] <!-- 下拉 --> 
+         <span class="cms-form-label">${f.label!}:</span><select name="attr_${f.field!}" value="${f.defValue!}" class="cms-form-select">
+						[#if f.optValue??]
+							[#list f.optValue?split(",") as opt]
+								<option [#if f.defValue==opt] selected="selected" [/#if]value="${opt}">${opt}</option>
+							[/#list]
+						[/#if]
+					</select> 
+				 [/#if]	
+				 [#if f.dataType==7]  <!-- 复选框 --> 
+         <span class="cms-form-label">${f.label!}:</span>
+            [#if f.optValue??]
+            <div>
+
+           
+							[#list f.optValue?split(",") as opt]
+								<input name="attr_${f.field!}"
+									[#if f.defValue??]
+											[#list f.defValue?split(",") as def]	
+												[#if def==opt]
+													checked="checked"
+												[/#if]
+											[/#list]
+									[/#if]
+								value="${opt}"  type="checkbox"/> ${opt}
+							[/#list]
+            [/#if]
+          </div>
+				 [/#if]	
+				 [#if f.dataType==8] <!-- 单选框 --> 
+         <span class="cms-form-label">${f.label!}:</span>
+            [#if f.optValue??]
+            <div>
+
+           
+							[#list f.optValue?split(",") as opt]
+								<input type="radio" name="attr_${f.field!}" value="${opt}" [#if f.defValue==opt] checked="checked" [/#if]/> ${opt}
+              [/#list]
+            </div>
+						[/#if]
+				[/#if]		
+				
+				[#if f.dataType==9] <!-- 附件 --> 
+        <span class="cms-form-label">${f.label!}:</span>
+        <div>
+            <input type="button"  class="cms-upload-btn"    id="fileupload${f_index}" value="上传"/>		
+            
+            <input id="docfileupload${f_index}" style='display:none' type="file" name="Filedata" data-url="../member/o_swfAttachsUpload.jspx" multiple>			
+            <input style="display:none" id="attachmentPaths${f_index}" name="attr_${f.field!}" readonly="true" value="${f.defValue!}"/>
+              <div>
+                <span id="progress${f_index}">
+                  <span class="bar" style="width: 0%;"></span>						
+                </span>	
+                <span id="barNum${f_index}"></span>	
+                <a id="delFj${f_index}">删除</a>			
+              </div>
+          </div>
+          	
+		  <script>
+				$(function() {
+					  $('#fileupload${f_index}').click(function() {
+					    $('#docfileupload${f_index}').trigger('click')
+					  })
+					  $('#docfileupload${f_index}').fileupload({
+					    dataType: 'json',
+					    add: function(e, data) {
+					      	data.submit()
+  						},
+					    done: function(e, data) {
+				        	if (data.result.error != undefined) {
+				        		alert(data.result.error)
+				        	}
+					   		$('#attachmentPaths${f_index}').val(data.result.attachUrl)
+       					 },
+					    progressall: function(e, data) {
+							var progress = parseInt(data.loaded / data.total * 100)
+	  					    $('#progress${f_index} .bar').css(
+						        'width',
+						        progress + '%'
+						     )
+	     					 $('#barNum${f_index}').text(progress + '%')
+						    }
+						  })
+	
+						  $('#delFj${f_index}').bind('click', function() {
+							    $('#progress${f_index} .bar').css(
+					                'width',
+					                 0 + '%'
+						        )
+						    $('#barNum${f_index}').text('')
+						    $('#attachmentPaths${f_index}').val('')
+						  })
+						})
+					</script>		
+				[/#if]	
+				
+				[#if f.dataType==10] <!-- 图片 --> 
+          <span class="cms-form-label">${f.label!}:</span>
+          <div>
+           <div>
+            <input type="button" class="cms-upload-btn"  id="imgUpload${f_index}" value="上传"/>
+           </div>
+           <div class="cms-upload-image">
+            <image id="uploadImgSrc${f_index}" width="100px" height="100px"/>
+           </div>
+          </div>
+					<input id="imgfileupload${f_index}" style='display:none' type="file" name="Filedata" data-url="../member/o_swfPicsUpload.jspx" multiple>			
+					<input style="display:none" id="uploadImgPath${f_index}" name="attr_${f.field!}" readonly="true" value="${f.defValue!}"/>
+				
+			 <script>
+				$(function() {
+					  $('#imgUpload${f_index}').click(function() {
+					     $('#imgfileupload${f_index}').trigger('click')
+ 					   })
+					
+					  $('#imgfileupload${f_index}').fileupload({
+					    dataType: 'json',
+					    add: function(e, data) {
+					      data.submit()
+    					},
+					    done: function(e, data) {
+					        	if (data.result.error != undefined) {
+					        		alert(data.result.error)
+					        	}
+					      imgUrl = data.result.imgUrl
+					      $('#uploadImgPath${f_index}').val(imgUrl)
+					      $('#uploadImgSrc${f_index}').attr('src', imgUrl)
+			       	 },
+					    progressall: function(e, data) {
+					
+					    }
+					 })
+				})
+			</script>
+				[/#if]	
+				
+				[#if f.dataType==11] <!-- 电话 --> 
+					<span class="cms-form-label">${f.label!}:</span><input name="attr_${f.field!}" type="text" value="${f.defValue!}"/>					
+				[/#if]	
+				
+				[#if f.dataType==12] <!-- 邮箱 --> 
+					<span class="cms-form-label">${f.label!}:</span><input name="attr_${f.field!}" type="text" value="${f.defValue!}"/>					
+				[/#if]	
+		
+         <div>${f.description!}</div>
+        </div>
+			 [/#list]
+		[/#if]
+    
+    <div class="cms-form-item">
+      <span class="cms-form-label">验证码： </span>
+      <input type="text" name="captcha" maxlength="20" class="cms-form-time"/> <img id="customCaptcha" 
+      src="${base}/captcha.svl" onclick="this.src='${base}/captcha.svl?d='+new Date()"
+      style=" height: 36px; margin-left: 20px;"
+      />
+    </div>
+    <div class="cms-footer">
+      <input type="submit" id="submit" value="提交" class="cms-submit"/>
+      <button type="reset" class="cms-rest">重置</button>
+    </div>
+
+  </div>
+  </form>
+</section>
+	<script type="text/javascript">
+            $(function() {
+	        	$('#submit').click(function() {
+	                var options = {
+	                    url: '${base}/record_save.jspx',
+	                    type: 'post',
+	                    dataType: 'json',
+	                    data: $('#form').serialize(),
+	                    success: function(data) {
+		                	if (data.status == 0) {
+			                    alert('提交成功')
+			                } else if (data.status == 1) {
+			                    alert('验证码错误')
+			                    $('#customCaptcha').click()
+			                } else if (data.status == 2) {
+			                    alert('该站点不可用')
+			                    $('#customCaptcha').click()
+			                } else if (data.status == 3) {
+			                    alert('您需要登陆')
+			                    $('#customCaptcha').click()
+			                } else if (data.status == 4) {
+			                    alert('表单发起尚未开始')
+			                    $('#customCaptcha').click()
+			                } else if (data.status == 5) {
+			                    alert('表单发起已经结束')
+			                    $('#customCaptcha').click()
+			                } else if (data.status == 6) {
+			                    alert('您今日已超过提交上限')
+			                    $('#customCaptcha').click()
+			                }
+	                    }
+	                }
+	                $.ajax(options)
+	                return false
+	            })
+	            $('.cms-rest').click(function(){
+	            	window.location.reload();            	
+	            })
+			})
+	</script>
+</body>
+</html>
