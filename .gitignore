@@ -56,3 +56,4 @@ target/jeecmsv9/thirdparty/ueditor/
 target/jeecmsv9/u/
 target/jeecmsv9/wenku/
 target/test-classes/
+/.idea/

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://112.50.200.6:8080/ehr/services/gzfw_jkcx.jws" xmlns:apachesoap="http://xml.apache.org/xml-soap" xmlns:impl="http://112.50.200.6:8080/ehr/services/gzfw_jkcx.jws" xmlns:intf="http://112.50.200.6:8080/ehr/services/gzfw_jkcx.jws" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<!--WSDL created by Apache Axis version: 1.4
+Built on Apr 22, 2006 (06:55:48 PDT)-->
+
+   <wsdl:message name="jkcx_JkhsRequest">
+
+      <wsdl:part name="ywgndm" type="xsd:string"/>
+
+      <wsdl:part name="ywxml" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:message name="jkcx_JkhsResponse">
+
+      <wsdl:part name="jkcx_JkhsReturn" type="xsd:string"/>
+
+   </wsdl:message>
+
+   <wsdl:portType name="JkcxImpl">
+
+      <wsdl:operation name="jkcx_Jkhs" parameterOrder="ywgndm ywxml">
+
+         <wsdl:input message="impl:jkcx_JkhsRequest" name="jkcx_JkhsRequest"/>
+
+         <wsdl:output message="impl:jkcx_JkhsResponse" name="jkcx_JkhsResponse"/>
+
+      </wsdl:operation>
+
+   </wsdl:portType>
+
+   <wsdl:binding name="gzfw_jkcxSoapBinding" type="impl:JkcxImpl">
+
+      <wsdlsoap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+      <wsdl:operation name="jkcx_Jkhs">
+
+         <wsdlsoap:operation soapAction=""/>
+
+         <wsdl:input name="jkcx_JkhsRequest">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://webservice.ehrshare.com" use="encoded"/>
+
+         </wsdl:input>
+
+         <wsdl:output name="jkcx_JkhsResponse">
+
+            <wsdlsoap:body encodingStyle="http://schemas.xmlsoap.org/soap/encoding/" namespace="http://112.50.200.6:8080/ehr/services/gzfw_jkcx.jws" use="encoded"/>
+
+         </wsdl:output>
+
+      </wsdl:operation>
+
+   </wsdl:binding>
+
+   <wsdl:service name="JkcxImplService">
+
+      <wsdl:port binding="impl:gzfw_jkcxSoapBinding" name="gzfw_jkcx">
+
+         <wsdlsoap:address location="http://112.50.200.6:8080/ehr/services/gzfw_jkcx.jws"/>
+
+      </wsdl:port>
+
+   </wsdl:service>
+
+</wsdl:definitions>

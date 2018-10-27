@@ -72,6 +72,7 @@
 		<jackson-core.version>2.7.4</jackson-core.version>
 		<jackson-databind.version>2.7.4</jackson-databind.version>
 		<jackson-annotations.version>2.7.4</jackson-annotations.version>
+		<junit-version>3.8.1</junit-version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -98,7 +99,7 @@
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
+			<version>${junit-version}</version>
 			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/antlr/antlr -->

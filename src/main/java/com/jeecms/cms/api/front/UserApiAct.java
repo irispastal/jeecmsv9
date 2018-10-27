@@ -1,15 +1,20 @@
 package com.jeecms.cms.api.front;
 
 import java.io.File;
+import java.rmi.RemoteException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.rpc.ServiceException;
 
 import com.alibaba.fastjson.JSON;
 import com.jeecms.cms.api.*;
 import com.jeecms.cms.api.vo.UserInfo;
+import com.jeecms.cms.client.Gzfw_jkcxSoapBindingStub;
+import com.jeecms.cms.client.JkcxImplServiceLocator;
+import com.jeecms.cms.util.XMLUtil;
 import com.jeecms.common.web.springmvc.MessageResolver;
 import com.jeecms.core.entity.*;
 import com.jeecms.core.manager.*;
@@ -20,6 +25,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentHelper;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -84,6 +92,151 @@ public class UserApiAct {
 		}
 		return result;
 	}
+
+	/**
+	 *
+	 * @param idCard
+	 * @param mobile
+	 * @param request
+	 * @param response
+	 */
+	@SignValidate(need = !NoSignValidation)
+	@RequestMapping(value = "/user/checkid", method = RequestMethod.POST)
+	public void checkID(String idCard,
+						String mobile,
+						HttpServletRequest request,
+						HttpServletResponse response) {
+		String body = "\"\"";
+		String message = Constants.API_STATUS_SUCCESS;
+		String code = ResponseCode.API_CODE_CALL_SUCCESS;
+
+		WebErrors errors = WebErrors.create(request);
+
+		// validate parameters
+		ApiValidate.validateRequiredParams(request, errors, idCard, mobile);
+		if (errors.hasErrors()) {
+			message = Constants.API_MESSAGE_PARAM_REQUIRED;
+			code = ResponseCode.API_CODE_PARAM_REQUIRED;
+		} else {
+			String phone = getMobileByIDCard(idCard);
+			if (phone == null || !phone.equals(mobile)) {
+				message = Constants.API_MESSAGE_MOBILE_MISMATCHING;
+				code = ResponseCode.API_CODE_MOBILE_MISMATCHING;
+			}
+		}
+
+		ApiResponse apiResponse=new ApiResponse(request, body, message,code);
+		ResponseUtils.renderApiJson(response, request, apiResponse);
+	}
+
+	/**
+	 *
+	 * @param idCard
+	 * @param key
+	 * @param request
+	 * @param response
+	 */
+	@RequestMapping(value = "/user/jkcx", method = RequestMethod.POST)
+	public void jkcx(String idCard,
+						String key,
+						HttpServletRequest request,
+						HttpServletResponse response) {
+		String body = "\"\"";
+		String message = Constants.API_STATUS_SUCCESS;
+		String code = ResponseCode.API_CODE_CALL_SUCCESS;
+
+		try {
+			if (key.equals("lushian")) {
+				String ywgndm = "CXJKDAXX";
+				String ywxml =  "<YWXML>\n" +
+						"    <DLSJ>\n" +
+						"        <DLDM>mhwz</DLDM>\n" +
+						"        <DLMM>mhwz</DLMM>\n" +
+						"    </DLSJ>\n" +
+						"    <YWSJ>\n" +
+						"        <ZJHM>$</ZJHM>\n" +
+						"        <ZJLX>01</ZJLX>\n" +
+						"    </YWSJ>\n" +
+						"</YWXML>";
+				ywxml = ywxml.replace("$", idCard);
+				Gzfw_jkcxSoapBindingStub binding = null;
+
+				binding = (Gzfw_jkcxSoapBindingStub) new JkcxImplServiceLocator().getgzfw_jkcx();
+
+				if (binding != null) {
+					binding.setTimeout(60000);
+					body = "\"" + binding.jkcx_Jkhs(ywgndm, ywxml) + "\"";
+				}
+			}
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+
+		ApiResponse apiResponse=new ApiResponse(request, body, message,code);
+		ResponseUtils.renderApiJson(response, request, apiResponse);
+	}
+
+	private String getMobileByIDCard(String idCard) {
+		String ywgndm = "CXJKDAXX";
+		String ywxml =  "<YWXML>\n" +
+						"    <DLSJ>\n" +
+						"        <DLDM>mhwz</DLDM>\n" +
+						"        <DLMM>mhwz</DLMM>\n" +
+						"    </DLSJ>\n" +
+						"    <YWSJ>\n" +
+						"        <ZJHM>$</ZJHM>\n" +
+						"        <ZJLX>01</ZJLX>\n" +
+						"    </YWSJ>\n" +
+						"</YWXML>";
+		ywxml = ywxml.replace("$", idCard);
+		Gzfw_jkcxSoapBindingStub binding = null;
+
+		try {
+			binding = (Gzfw_jkcxSoapBindingStub) new JkcxImplServiceLocator().getgzfw_jkcx();
+		} catch (ServiceException e) {
+			e.printStackTrace();
+		}
+
+
+		try {
+			if (binding != null) {
+				// Time out after a minute
+				binding.setTimeout(60000);
+				String xml = binding.jkcx_Jkhs(ywgndm, ywxml);
+				Document doc = DocumentHelper.parseText(xml);
+
+				Map<String, Object> map = XMLUtil.Dom2Map(doc);
+				if (map.get("STATUS").equals("T")) {
+					if (map.get("YWSJ") != null && StringUtils.isNotBlank(map.get("YWSJ").toString())) {
+						Map<String, Object> ywsj = (Map<String, Object>) map.get("YWSJ");
+						if (ywsj != null) {
+							Map<String, Object> jbxx = (Map<String, Object>) ywsj.get("DA_GR_JBXX");
+							if (StringUtils.isNotBlank(jbxx.get("BRDHHM").toString())){
+								return jbxx.get("BRDHHM").toString();
+							}  else if (StringUtils.isNotBlank(jbxx.get("LXRDHHM").toString())) {
+								return jbxx.get("LXRDHHM").toString();
+							} else {
+								System.out.println("档案信息中不存在手机号码信息");
+							}
+						}
+					} else {
+						System.out.println(map.get("MSG"));
+					}
+				} else {
+					map.get("MSG");
+				}
+			}
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
 
 	/**
 	 *
