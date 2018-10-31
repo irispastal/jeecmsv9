@@ -11,6 +11,7 @@ import javax.xml.rpc.ServiceException;
 
 import com.alibaba.fastjson.JSON;
 import com.jeecms.cms.api.*;
+import com.jeecms.cms.api.vo.Archieve;
 import com.jeecms.cms.api.vo.UserInfo;
 import com.jeecms.cms.client.Gzfw_jkcxSoapBindingStub;
 import com.jeecms.cms.client.JkcxImplServiceLocator;
@@ -103,7 +104,6 @@ public class UserApiAct {
 	@SignValidate(need = !NoSignValidation)
 	@RequestMapping(value = "/user/checkid", method = RequestMethod.POST)
 	public void checkID(String idCard,
-						String mobile,
 						HttpServletRequest request,
 						HttpServletResponse response) {
 		String body = "\"\"";
@@ -113,15 +113,17 @@ public class UserApiAct {
 		WebErrors errors = WebErrors.create(request);
 
 		// validate parameters
-		ApiValidate.validateRequiredParams(request, errors, idCard, mobile);
+		ApiValidate.validateRequiredParams(request, errors, idCard);
 		if (errors.hasErrors()) {
 			message = Constants.API_MESSAGE_PARAM_REQUIRED;
 			code = ResponseCode.API_CODE_PARAM_REQUIRED;
 		} else {
-			String phone = getMobileByIDCard(idCard);
-			if (phone == null || !phone.equals(mobile)) {
-				message = Constants.API_MESSAGE_MOBILE_MISMATCHING;
-				code = ResponseCode.API_CODE_MOBILE_MISMATCHING;
+			Archieve archieve = getArchieveByIDCard(idCard);
+			if (archieve == null) {
+				message = Constants.API_MESSAGE_USER_NOT_FOUND;
+				code = ResponseCode.API_CODE_USER_NOT_FOUND;
+			} else {
+				body = JSON.toJSONString(archieve);
 			}
 		}
 
@@ -136,7 +138,7 @@ public class UserApiAct {
 	 * @param request
 	 * @param response
 	 */
-	@RequestMapping(value = "/user/jkcx", method = RequestMethod.POST)
+//	@RequestMapping(value = "/user/jkcx", method = RequestMethod.POST)
 	public void jkcx(String idCard,
 						String key,
 						HttpServletRequest request,
@@ -178,7 +180,9 @@ public class UserApiAct {
 		ResponseUtils.renderApiJson(response, request, apiResponse);
 	}
 
-	private String getMobileByIDCard(String idCard) {
+	private Archieve getArchieveByIDCard(String idCard) {
+		Archieve archieve = new Archieve();
+
 		String ywgndm = "CXJKDAXX";
 		String ywxml =  "<YWXML>\n" +
 						"    <DLSJ>\n" +
@@ -213,13 +217,17 @@ public class UserApiAct {
 						Map<String, Object> ywsj = (Map<String, Object>) map.get("YWSJ");
 						if (ywsj != null) {
 							Map<String, Object> jbxx = (Map<String, Object>) ywsj.get("DA_GR_JBXX");
+
 							if (StringUtils.isNotBlank(jbxx.get("BRDHHM").toString())){
-								return jbxx.get("BRDHHM").toString();
-							}  else if (StringUtils.isNotBlank(jbxx.get("LXRDHHM").toString())) {
-								return jbxx.get("LXRDHHM").toString();
-							} else {
-								System.out.println("档案信息中不存在手机号码信息");
+								archieve.setMobile(jbxx.get("BRDHHM").toString());
 							}
+							if (StringUtils.isNotBlank(jbxx.get("LXRDHHM").toString())) {
+								archieve.setAssociatedMobile(jbxx.get("LXRDHHM").toString());
+							}
+							if (StringUtils.isNotBlank(jbxx.get("XM").toString())) {
+								archieve.setName(jbxx.get("XM").toString());
+							}
+							return archieve;
 						}
 					} else {
 						System.out.println(map.get("MSG"));

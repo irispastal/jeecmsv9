@@ -2,12 +2,10 @@ package com.jeecms.cms.api.member;
 
 import com.alibaba.fastjson.JSON;
 import com.jeecms.cms.annotation.SignValidate;
-import com.jeecms.cms.api.ApiResponse;
-import com.jeecms.cms.api.ApiValidate;
-import com.jeecms.cms.api.Constants;
-import com.jeecms.cms.api.ResponseCode;
+import com.jeecms.cms.api.*;
 import com.jeecms.common.page.Pagination;
 import com.jeecms.common.web.ResponseUtils;
+import com.jeecms.common.web.session.SessionProvider;
 import com.jeecms.core.entity.CmsUser;
 import com.jeecms.core.entity.CmsUserIdcard;
 import com.jeecms.core.manager.CmsUserIdcardMng;
@@ -25,11 +23,14 @@ import java.util.*;
 
 @Controller
 public class IdcardApiAct {
-    static final boolean NeedSignValidation = true;
+    static final boolean NeedSignValidation = true;;
 
     @SignValidate(need = NeedSignValidation)
     @RequestMapping(value = "/idcard/add", method = RequestMethod.POST)
-    public void add(CmsUserIdcard card, HttpServletRequest request, HttpServletResponse response) {
+    public void add(String smsCode,
+                    CmsUserIdcard card,
+                    HttpServletRequest request,
+                    HttpServletResponse response) {
         CmsUser user = CmsUtils.getUser(request);
         WebErrors errors = WebErrors.create(request);
 
@@ -38,12 +39,20 @@ public class IdcardApiAct {
         String body = "\"\"";
 
         // 参数非空校验
-        ApiValidate.validateRequiredParams(request, errors, card.getIdcard(), card.getMobile(), card.getRealname());
+        ApiValidate.validateRequiredParams(request, errors, card.getIdcard(), card.getMobile(), card.getRealname(), smsCode);
 
         if (user != null) {
             card.setUser(user);
             if (!errors.hasErrors()) {
-                cmsUserIdcardMng.save(card);
+                ValidationUtil.validateSmsCode(5, smsCode, errors, request, response, session);
+
+                if (!errors.hasErrors()) {
+                    cmsUserIdcardMng.save(card);
+                } else {
+                    // 短信验证码错误
+                    message = Constants.API_MESSAGE_SMS_ERROR;
+                    code = ResponseCode.API_CODE_SMS_ERROR;
+                }
             } else {
                 message = Constants.API_MESSAGE_PARAM_REQUIRED;
                 code = ResponseCode.API_CODE_PARAM_REQUIRED;
@@ -184,4 +193,7 @@ public class IdcardApiAct {
 
     @Autowired
     CmsUserMng cmsUserMng;
+
+    @Autowired
+    private SessionProvider session;
 }

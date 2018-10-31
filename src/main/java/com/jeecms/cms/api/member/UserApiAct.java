@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class UserApiAct {
-	static final boolean NeedSignValidation = true;
+	static final boolean NeedSignValidation = true;;
 
 	@RequestMapping(value = "/user/pwdreset", method = RequestMethod.POST)
 	public void userResetPwd(String username,
@@ -51,7 +51,7 @@ public class UserApiAct {
 		String message = Constants.API_MESSAGE_PARAM_REQUIRED;
 		String code = ResponseCode.API_CODE_PARAM_REQUIRED;
 		WebErrors errors=WebErrors.create(request);
-		// 短信验证码用途 1：注册 2： 找回密码 3：重置密码 4：登录
+		// 短信验证码用途 1：注册 2： 找回密码 3：重置密码 4：登录 5: 身份校验
 		Integer type = 3;
 		//验证公共非空参数
 		ApiValidate.validateRequiredParams(request, errors, username, smsCode, password);

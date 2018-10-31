@@ -32,6 +32,10 @@ public class ValidationUtil {
                 code = "RESETPWD_AUTO_CODE";
                 time = "RESETPWD_AUTO_CODE_CREAT_TIME";
                 break;
+            case 5:
+                code = "VALIDATEID_AUTO_CODE";
+                time = "VALIDATEID_AUTO_CODE_CREAT_TIME";
+                break;
             default:
                 code = "LOGIN_AUTO_CODE";
                 time = "LOGIN_AUTO_CODE_CREAT_TIME";

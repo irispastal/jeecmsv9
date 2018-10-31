@@ -52,7 +52,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class CmsSmsApiAct {
 	static final boolean exactlySend = true;
 
-	static final boolean NeedSignValidation = true;
+	static final boolean NeedSignValidation = true;;
 
 	static final String tpl = "【宁德市公众健康服务平台】验证码：$。您正在使用短信验证码登录功能，该验证码仅用于身份验证，请勿泄露给他人使用。";
 
@@ -288,9 +288,12 @@ public class CmsSmsApiAct {
 					session.setAttribute("FORGOTPWD_AUTO_CODE",values);//验证码值
 					session.setAttribute("FORGOTPWD_AUTO_CODE_CREAT_TIME",new Date().getTime()+effectiveTime);//验证码有效时间
 				}  else if (smsType == 3){
-					session.setAttribute("RESETPWD_AUTO_CODE",values);//验证码值
+					session.setAttribute("RESETPWD_AUTO_CODE", values);//验证码值
 					session.setAttribute("RESETPWD_AUTO_CODE_CREAT_TIME",new Date().getTime()+effectiveTime);//验证码有效时间
-				} else {
+				} else if (smsType == 5) {
+					session.setAttribute("VALIDATEID_AUTO_CODE", values);//验证码值
+					session.setAttribute("VALIDATEID_AUTO_CODE_CREAT_TIME", new Date().getTime()+effectiveTime);//验证码有效时间
+				} else  {
 					session.setAttribute("LOGIN_AUTO_CODE", values);
 					session.setAttribute("LOGIN_AUTO_CODE_CREAT_TIME", new Date().getTime()+effectiveTime);// 验证码有效时间
 				}
