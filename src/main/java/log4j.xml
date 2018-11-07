@@ -33,7 +33,7 @@
     </appender>
     <!-- output the debug   -->
     <appender name="log4jDebug" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="E:/cms/logs/debug"/>
+        <param name="File" value="E:/ningde-hostpital-cms/logs/debug"/>
         <param name="DatePattern" value="'.log'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="5120KB"/>
@@ -52,7 +52,7 @@
         </filter>
     </appender>
     <appender name="log4jInfo" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="E:/cms/logs/info"/>
+        <param name="File" value="E:/ningde-hostpital-cms/logs/info"/>
         <param name="DatePattern" value="'.log'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="5120KB"/>
@@ -71,7 +71,7 @@
         </filter>
     </appender>
     <appender name="log4jWarn" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="E:/cms/logs/warn"/>
+        <param name="File" value="E:/ningde-hostpital-cms/logs/warn"/>
         <param name="DatePattern" value="'.log'yyyy-MM-dd"/>
         <param name="Append" value="true"/>
         <param name="MaxFileSize" value="5120KB"/>
@@ -90,7 +90,7 @@
         </filter>
     </appender>
     <appender name="log4jError" class="org.apache.log4j.DailyRollingFileAppender">
-        <param name="File" value="E:/cms/logs/error"/>
+        <param name="File" value="E:/ningde-hostpital-cms/logs/error"/>
         <param name="DatePattern" value="'.log'yyyy-MM-dd"/>
         <param name="MaxFileSize" value="5120KB"/>
         <param name="MaxBackupIndex" value="2"/>
