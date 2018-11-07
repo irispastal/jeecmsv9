@@ -16,6 +16,7 @@ import com.jeecms.cms.api.vo.UserInfo;
 import com.jeecms.cms.client.Gzfw_jkcxSoapBindingStub;
 import com.jeecms.cms.client.JkcxImplServiceLocator;
 import com.jeecms.cms.util.XMLUtil;
+import com.jeecms.common.util.*;
 import com.jeecms.common.web.springmvc.MessageResolver;
 import com.jeecms.core.entity.*;
 import com.jeecms.core.manager.*;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import com.jeecms.cms.annotation.SignValidate;
 import com.jeecms.cms.entity.assist.CmsWebservice;
@@ -51,10 +52,6 @@ import com.jeecms.cms.manager.main.ApiUserLoginMng;
 import com.jeecms.cms.manager.main.CmsThirdAccountMng;
 import com.jeecms.cms.service.ImageSvc;
 import com.jeecms.common.security.encoder.PwdEncoder;
-import com.jeecms.common.util.AES128Util;
-import com.jeecms.common.util.DateUtils;
-import com.jeecms.common.util.Num62;
-import com.jeecms.common.util.PropertyUtils;
 import com.jeecms.common.web.HttpClientUtil;
 import com.jeecms.common.web.LoginUtils;
 import com.jeecms.common.web.RequestUtils;
@@ -63,7 +60,6 @@ import com.jeecms.common.web.session.SessionProvider;
 import com.jeecms.common.web.springmvc.RealPathResolver;
 import com.jeecms.core.web.WebErrors;
 import com.jeecms.core.web.util.CmsUtils;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class UserApiAct {
@@ -71,7 +67,7 @@ public class UserApiAct {
 	
 	private final String WEIXIN_JSCODE_2_SESSION_URL="weixin.jscode2sessionUrl";
 
-	static final boolean NeedSignValidation = false;
+	static final boolean NeedSignValidation = true;
 
 	/**
 	 *
@@ -111,7 +107,7 @@ public class UserApiAct {
 		String code = ResponseCode.API_CODE_CALL_SUCCESS;
 
 		WebErrors errors = WebErrors.create(request);
-
+		log.info("test");
 		// validate parameters
 		ApiValidate.validateRequiredParams(request, errors, idCard);
 		if (errors.hasErrors()) {
@@ -216,7 +212,15 @@ public class UserApiAct {
 					if (map.get("YWSJ") != null && StringUtils.isNotBlank(map.get("YWSJ").toString())) {
 						Map<String, Object> ywsj = (Map<String, Object>) map.get("YWSJ");
 						if (ywsj != null) {
-							Map<String, Object> jbxx = (Map<String, Object>) ywsj.get("DA_GR_JBXX");
+							Object object = ywsj.get("DA_GR_JBXX");
+							Map<String, Object> jbxx = null;
+							if (object instanceof ArrayList) {
+								jbxx = (Map<String, Object>) ((ArrayList<Object>) object).get(0);
+							} else if(object instanceof Map) {
+								jbxx = (Map<String, Object>) ywsj.get("DA_GR_JBXX");
+							} else {
+								return null;
+							}
 
 							if (StringUtils.isNotBlank(jbxx.get("BRDHHM").toString())){
 								archieve.setMobile(jbxx.get("BRDHHM").toString());
@@ -947,6 +951,30 @@ public class UserApiAct {
 				code=ResponseCode.API_CODE_USERNAME_EXIST;
 			}
 		}
+		ApiResponse apiResponse=new ApiResponse(request, body, message,code);
+		ResponseUtils.renderApiJson(response, request, apiResponse);
+	}
+
+	@PostMapping(value = "/test/sign")
+	public void sign(HttpServletRequest request, HttpServletResponse response) {
+		WebErrors errors=WebErrors.create(request);
+		String body="\"\"";
+		String message = Constants.API_MESSAGE_PARAM_REQUIRED;
+		String code = ResponseCode.API_CODE_PARAM_REQUIRED;
+
+		String appId=request.getParameter(Constants.COMMON_PARAM_APPID);
+		ApiAccount apiAccount=apiAccountMng.findByAppId(appId);
+		if (apiAccount != null && !apiAccount.getDisabled()) {
+			Map<String,String>param=RequestUtils.getSignMap(request);
+			String appKey=apiAccount.getAppKey();
+			body=PayUtil.createSign(param, appKey);
+			message = Constants.API_MESSAGE_SUCCESS;
+			code = ResponseCode.API_CODE_CALL_SUCCESS;
+		} else {
+			message = Constants.API_MESSAGE_ACCOUNT_DISABLED;
+			code = ResponseCode.API_CODE_ACCOUNT_DISABLED;
+		}
+
 		ApiResponse apiResponse=new ApiResponse(request, body, message,code);
 		ResponseUtils.renderApiJson(response, request, apiResponse);
 	}

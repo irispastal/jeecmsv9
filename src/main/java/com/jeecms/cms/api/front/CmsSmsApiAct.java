@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class CmsSmsApiAct {
-	static final boolean exactlySend = false;
+	static final boolean exactlySend = true;
 
 	static final boolean NeedSignValidation = true;
 

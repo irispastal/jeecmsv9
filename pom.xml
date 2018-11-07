@@ -63,6 +63,7 @@
 		<jta.verson>1.1</jta.verson>
 		<openoffice.version>3.2.1</openoffice.version>
 		<logback.version>1.2.3</logback.version>
+		<log4j.version>1.2.16</log4j.version>
 		<spring.version>4.3.16.RELEASE</spring.version>
 		<wsdl4j.version>1.5.3</wsdl4j.version>
 		<zxing.version>2.3.0</zxing.version>
@@ -313,9 +314,6 @@
 			<version>${jboss-logging.version}</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.slf4j/log4j-over-slf4j -->
-		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>log4j-over-slf4j</artifactId> 
-			<version>${slf4j.version}</version> </dependency> -->
 		<dependency>
 			<groupId>com.github.qcloudsms</groupId>
 			<artifactId>sms</artifactId>
@@ -326,12 +324,15 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${slf4j.version}</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
-		<!--  -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>${slf4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/jdom/jdom -->
 		<dependency>
@@ -395,6 +396,16 @@
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
 			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.logback-extensions</groupId>
+			<artifactId>logback-ext-spring</artifactId>
+			<version>0.1.5</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.lucene/lucene-core -->
 		<dependency>
