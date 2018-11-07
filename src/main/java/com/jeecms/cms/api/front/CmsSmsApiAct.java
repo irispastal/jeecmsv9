@@ -50,9 +50,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class CmsSmsApiAct {
-	static final boolean exactlySend = true;
+	static final boolean exactlySend = false;
 
-	static final boolean NeedSignValidation = true;;
+	static final boolean NeedSignValidation = true;
 
 	static final String tpl = "【宁德市公众健康服务平台】验证码：$。您正在使用短信验证码登录功能，该验证码仅用于身份验证，请勿泄露给他人使用。";
 
@@ -241,6 +241,7 @@ public class CmsSmsApiAct {
 					buffer.append(r.nextInt(10));
 				}
 				values = buffer.toString();
+				// values = "123456";
 			}
 
 			if (!errors.hasErrors()) {
@@ -679,10 +680,16 @@ public class CmsSmsApiAct {
 	private WebErrors sendByDefault(CmsSms bean,String mobilePhone,String values,WebErrors errors, CmsSite site, String username, Integer smsSendType) {
 		String[] mobiles = {mobilePhone};
 		int result = 0;
+		int retry = 3;
 
 		if (exactlySend) {
 			try {
 				result = sendSMsg(mobiles, values);
+				while (result != 0 && retry > 1) {
+					result = sendSMsg(mobiles, values);
+					retry--;
+					Thread.sleep(200L);
+				}
 				if (result != 0) {
 					// 请求失败
 					log.error("Fail to send sms code {} to mobile: {}, result code: {}", values, mobilePhone, result);

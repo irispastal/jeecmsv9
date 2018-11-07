@@ -23,7 +23,7 @@ import java.util.*;
 
 @Controller
 public class IdcardApiAct {
-    static final boolean NeedSignValidation = true;;
+    static final boolean NeedSignValidation = true;
 
     @SignValidate(need = NeedSignValidation)
     @RequestMapping(value = "/idcard/add", method = RequestMethod.POST)

@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
 public class UserApiAct {
-	static final boolean NeedSignValidation = true;;
+	static final boolean NeedSignValidation = true;
 
 	@RequestMapping(value = "/user/pwdreset", method = RequestMethod.POST)
 	public void userResetPwd(String username,

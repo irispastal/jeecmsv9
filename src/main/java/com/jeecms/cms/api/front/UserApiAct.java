@@ -71,7 +71,7 @@ public class UserApiAct {
 	
 	private final String WEIXIN_JSCODE_2_SESSION_URL="weixin.jscode2sessionUrl";
 
-	static final boolean NoSignValidation = false;
+	static final boolean NeedSignValidation = false;
 
 	/**
 	 *
@@ -101,7 +101,7 @@ public class UserApiAct {
 	 * @param request
 	 * @param response
 	 */
-	@SignValidate(need = !NoSignValidation)
+	@SignValidate(need = NeedSignValidation)
 	@RequestMapping(value = "/user/checkid", method = RequestMethod.POST)
 	public void checkID(String idCard,
 						HttpServletRequest request,
@@ -256,7 +256,7 @@ public class UserApiAct {
 	 * @param request
 	 * @param response
 	 */
-	@SignValidate(need = !NoSignValidation)
+	@SignValidate(need = NeedSignValidation)
 	@RequestMapping(value = "/user/register", method = RequestMethod.POST)
 	public void userRegester(String username,
 							 String loginPassword,
@@ -333,7 +333,7 @@ public class UserApiAct {
 		ApiValidate.validateRequiredParams(request, errors, mobile, smsCode, appId, nonce_str, sign);
 		// 签名校验
 
-		if (!NoSignValidation) {
+		if (NeedSignValidation) {
 			int flag = ValidationUtil.validateSign(apiRecordMng, apiAccountMng, request, errors, appId, sign);
 			switch (flag) {
 				case 1:
@@ -416,7 +416,7 @@ public class UserApiAct {
 	 * @param appId appID 必选
 	 * @param sign 签名必选
 	 */
-	@SignValidate(need = !NoSignValidation)
+	@SignValidate(need = NeedSignValidation)
 	@RequestMapping(value = "/user/myLogin", method = RequestMethod.POST)
 	public void myLogin(
 			String username,
@@ -901,7 +901,7 @@ public class UserApiAct {
 	 * @param qq qq号  非必选
 	 * @param userImg 用户头像  非必选
 	 */
-	@SignValidate(need = !NoSignValidation)
+	@SignValidate(need = NeedSignValidation)
 	@RequestMapping(value = "/user/add")
 	public void userAdd(
 			String username, String email, String loginPassword,
