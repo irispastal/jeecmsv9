@@ -107,7 +107,6 @@ public class UserApiAct {
 		String code = ResponseCode.API_CODE_CALL_SUCCESS;
 
 		WebErrors errors = WebErrors.create(request);
-		log.info("test");
 		// validate parameters
 		ApiValidate.validateRequiredParams(request, errors, idCard);
 		if (errors.hasErrors()) {
@@ -955,7 +954,7 @@ public class UserApiAct {
 		ResponseUtils.renderApiJson(response, request, apiResponse);
 	}
 
-	@PostMapping(value = "/test/sign")
+/*	@PostMapping(value = "/test/sign")
 	public void sign(HttpServletRequest request, HttpServletResponse response) {
 		WebErrors errors=WebErrors.create(request);
 		String body="\"\"";
@@ -977,8 +976,7 @@ public class UserApiAct {
 
 		ApiResponse apiResponse=new ApiResponse(request, body, message,code);
 		ResponseUtils.renderApiJson(response, request, apiResponse);
-	}
-
+	}*/
 
 	/**
 	 *

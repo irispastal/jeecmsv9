@@ -54,7 +54,7 @@ public class CmsSmsApiAct {
 
 	static final boolean NeedSignValidation = true;
 
-	static final String tpl = "【宁德市公众健康服务平台】验证码：$。您正在使用短信验证码登录功能，该验证码仅用于身份验证，请勿泄露给他人使用。";
+	static final String tpl = "【宁德市卫计委】您的验证码为：$，有效时间为5分钟。请勿泄露给他人使用。";
 
 	static final String dbIp = "10.129.255.253";
 
