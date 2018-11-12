@@ -26,7 +26,7 @@
 		<many-to-one name="group" column="group_id" class="CmsGroup" not-null="true"></many-to-one>
 		<many-to-one name="department" column="depart_id" class="CmsDepartment" not-null="false"></many-to-one>
 		<map name="attr" table="jc_user_attr" cascade="all-delete-orphan">
-			<cache usage="read-write"/>
+			<cache usage="transactional"/>
 			<key column="user_id" not-null="true"/>
 			<map-key column="attr_name" type="string" length="30"/>
 			<element column="attr_value" type="string" length="255"/>
