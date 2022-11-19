@@ -5,6 +5,7 @@ import static com.jeecms.cms.Constants.TPL_BASE;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -580,7 +581,7 @@ public class CmsTemplateApiAct {
 						Locale.ENGLISH);
 				String filepath = "";
 				try {
-					File tempFile = File.createTempFile("tplZip", "temp");
+					File tempFile = Files.createTempFile("tplZip", "temp").toFile();
 					file.transferTo(tempFile);
 					resourceMng.imoport(tempFile, site);
 					tempFile.delete();
